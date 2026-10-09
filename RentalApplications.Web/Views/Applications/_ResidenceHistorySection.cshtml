@@ -1,0 +1,64 @@
+@model RentalApplicationFormViewModel
+
+<div id="residence-section" data-residence-refresh>
+    @if (!Model.IsReadOnly)
+    {
+        <button type="button" class="btn btn-sm btn-primary mb-3" data-modal-load="@Url.Action("CreateModal", "Residences", new { applicationId = Model.Id })">Add residence</button>
+    }
+
+    @if (Model.ResidenceHistory.Items.Count == 0)
+    {
+        <p class="text-muted">No prior residences added yet.</p>
+    }
+    else
+    {
+        <table class="table table-sm">
+            <thead>
+                <tr>
+                    <th>Address</th>
+                    <th>Landlord</th>
+                    <th>Phone</th>
+                    <th>Moved in</th>
+                    <th>Moved out</th>
+                    @if (!Model.IsReadOnly)
+                    {
+                        <th></th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ResidenceHistory.Items)
+                {
+                    <tr>
+                        <td>@item.Address</td>
+                        <td>@item.LandlordName</td>
+                        <td>@item.LandlordPhone</td>
+                        <td>@item.MoveInDate.ToString("d")</td>
+                        <td>@(item.MoveOutDate?.ToString("d") ?? "—")</td>
+                        @if (!Model.IsReadOnly)
+                        {
+                            <td class="text-end">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-modal-load="@Url.Action("EditModal", "Residences", new { id = item.Id })">Edit</button>
+                                <button type="button" class="btn btn-sm btn-outline-danger residence-delete" data-url="@Url.Action("Delete", "Residences")" data-id="@item.Id">Remove</button>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    <span asp-validation-for="ResidenceHistory.Items" class="text-danger"></span>
+</div>
+
+@if (!Model.IsReadOnly)
+{
+    <script>
+        document.querySelectorAll('.residence-delete').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (!confirm('Remove this residence?')) return;
+                RentalModals.postJson(btn.dataset.url, { id: parseInt(btn.dataset.id, 10) })
+                    .then(() => location.reload());
+            });
+        });
+    </script>
+}

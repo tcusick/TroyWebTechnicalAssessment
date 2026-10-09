@@ -1,0 +1,87 @@
+@model RentalApplicationFormViewModel
+@{
+    ViewData["Title"] = $"Application #{Model.Id}";
+}
+
+<div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+        <h1>Application</h1>
+        <p class="text-muted mb-0">@Model.PropertyName — Unit @Model.UnitNumber · <span class="badge text-bg-secondary">@Model.Status</span></p>
+    </div>
+    @if (Model.CanWithdraw)
+    {
+        <form asp-action="Withdraw" method="post" class="ms-2">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Withdraw this application?');">Withdraw</button>
+        </form>
+    }
+</div>
+
+@if (Model.ShowManagerHistory)
+{
+    <div class="mb-4">
+        <h2 class="h5">Review history</h2>
+        @await Component.InvokeAsync("ApplicationStatusHistory", new { applicationId = Model.Id })
+    </div>
+}
+
+<form asp-action="Edit" method="post" id="applicationForm">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="UnitId" />
+    <input type="hidden" asp-for="CurrentSection" />
+    <input type="hidden" asp-for="Status" />
+    <input type="hidden" name="Command" id="commandField" value="" />
+
+    <ul class="nav nav-pills mb-3">
+        <li class="nav-item"><span class="nav-link @(Model.CurrentSection == ApplicationSection.ApplicantInformation ? "active" : "")">Applicant information</span></li>
+        <li class="nav-item"><span class="nav-link @(Model.CurrentSection == ApplicationSection.ResidenceHistory ? "active" : "")">Residence history</span></li>
+        <li class="nav-item"><span class="nav-link @(Model.CurrentSection == ApplicationSection.Summary ? "active" : "")">Summary</span></li>
+    </ul>
+
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+    @if (Model.CurrentSection == ApplicationSection.ApplicantInformation)
+    {
+        <partial name="_ApplicantInformationSection" model="Model" />
+    }
+    else if (Model.CurrentSection == ApplicationSection.ResidenceHistory)
+    {
+        <partial name="_ResidenceHistorySection" model="Model" />
+    }
+    else
+    {
+        <partial name="_SummarySection" model="Model" />
+    }
+
+    @if (!Model.IsReadOnly)
+    {
+        <div class="d-flex gap-2 mt-3">
+            @if (Model.CurrentSection != ApplicationSection.ApplicantInformation)
+            {
+                <button type="submit" class="btn btn-outline-secondary" onclick="document.getElementById('commandField').value='back';">Back</button>
+            }
+            @if (Model.CurrentSection != ApplicationSection.Summary)
+            {
+                <button type="submit" class="btn btn-primary" onclick="document.getElementById('commandField').value='continue';">Continue</button>
+            }
+            @if (Model.CurrentSection == ApplicationSection.Summary && Model.CanSubmit)
+            {
+                <button type="submit" class="btn btn-success" onclick="document.getElementById('commandField').value='submit';">Submit application</button>
+            }
+        </div>
+    }
+</form>
+
+<div class="modal fade" id="appModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="appModalContent"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('[data-residence-refresh]').forEach(el => {
+            el.addEventListener('residence-updated', () => location.reload());
+        });
+    </script>
+}

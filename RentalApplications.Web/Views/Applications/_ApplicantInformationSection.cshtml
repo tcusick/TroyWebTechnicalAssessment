@@ -1,0 +1,26 @@
+@model RentalApplicationFormViewModel
+
+<div id="applicant-section">
+    <fieldset @(Model.IsReadOnly ? "disabled" : null)>
+        <div class="mb-3">
+            <label asp-for="ApplicantInformation.ApplicantName" class="form-label"></label>
+            <input asp-for="ApplicantInformation.ApplicantName" class="form-control" />
+            <span asp-validation-for="ApplicantInformation.ApplicantName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ApplicantInformation.Phone" class="form-label"></label>
+            <input asp-for="ApplicantInformation.Phone" class="form-control" />
+            <span asp-validation-for="ApplicantInformation.Phone" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ApplicantInformation.Email" class="form-label"></label>
+            <input asp-for="ApplicantInformation.Email" class="form-control" />
+            <span asp-validation-for="ApplicantInformation.Email" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ApplicantInformation.CurrentAddress" class="form-label"></label>
+            <textarea asp-for="ApplicantInformation.CurrentAddress" class="form-control" rows="2"></textarea>
+            <span asp-validation-for="ApplicantInformation.CurrentAddress" class="text-danger"></span>
+        </div>
+    </fieldset>
+</div>

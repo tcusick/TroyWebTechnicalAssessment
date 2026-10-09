@@ -1,0 +1,12 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="text-center py-5">
+    <h1 class="display-5">Property rental applications</h1>
+    <p class="lead text-muted">Sign in to manage properties or apply for an available unit.</p>
+    <div class="d-flex gap-2 justify-content-center mt-4">
+        <a class="btn btn-primary" asp-controller="Account" asp-action="Login">Log in</a>
+        <a class="btn btn-outline-primary" asp-controller="Account" asp-action="Register">Create an account</a>
+    </div>
+</div>

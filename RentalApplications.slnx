@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="RentalApplications.Domain\RentalApplications.Domain.csproj" />
+  <Project Path="RentalApplications.Data\RentalApplications.Data.csproj" />
+  <Project Path="RentalApplications.Services\RentalApplications.Services.csproj" />
+  <Project Path="RentalApplications.Web\RentalApplications.Web.csproj" />
+  <Project Path="RentalApplications.Tests\RentalApplications.Tests.csproj" />
+</Solution>

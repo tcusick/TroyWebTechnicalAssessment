@@ -1,0 +1,25 @@
+@model IList<RentalApplications.Services.Models.StatusHistoryRow>
+
+@if (Model.Count == 0)
+{
+    <p class="text-muted mb-0">No history recorded.</p>
+}
+else
+{
+    <ul class="list-group list-group-flush">
+        @foreach (var entry in Model)
+        {
+            <li class="list-group-item px-0">
+                <div class="d-flex justify-content-between">
+                    <span><strong>@entry.FromStatus</strong> → <strong>@entry.ToStatus</strong></span>
+                    <span class="text-muted small">@entry.ChangedAt.ToLocalTime().ToString("g")</span>
+                </div>
+                <div class="small text-muted">@entry.ChangedByName</div>
+                @if (!string.IsNullOrWhiteSpace(entry.Comment))
+                {
+                    <div class="small mt-1">@entry.Comment</div>
+                }
+            </li>
+        }
+    </ul>
+}

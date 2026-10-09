@@ -1,0 +1,70 @@
+@model IList<ApplicationListItemViewModel>
+@{
+    ViewData["Title"] = "Applications";
+    var filter = (ApplicationListFilterViewModel)ViewBag.Filter;
+    var properties = (IList<Property>)ViewBag.Properties;
+}
+
+<h1 class="mb-3">@ViewData["Title"]</h1>
+
+<form method="get" class="row g-2 align-items-end mb-4">
+    <div class="col-md-3">
+        <label class="form-label">Status</label>
+        <select name="Status" class="form-select">
+            <option value="">All</option>
+            @foreach (ApplicationStatus status in Enum.GetValues<ApplicationStatus>())
+            {
+                <option value="@status" selected="@(filter.Status == status)">@status</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Property</label>
+        <select name="PropertyId" class="form-select">
+            <option value="">All</option>
+            @foreach (var property in properties)
+            {
+                <option value="@property.Id" selected="@(filter.PropertyId == property.Id)">@property.Name</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Filter</button>
+    </div>
+</form>
+
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>Applicant</th>
+            <th>Property</th>
+            <th>Unit</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.ApplicantName</td>
+                <td>@item.PropertyName</td>
+                <td>@item.UnitNumber</td>
+                <td>@item.Status</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">Open</a>
+                    @if (User.IsInRole(AppRoles.PropertyManager) && item.Status == ApplicationStatus.Submitted)
+                    {
+                        <button type="button" class="btn btn-sm btn-primary" data-modal-load="@Url.Action("ReviewModal", new { id = item.Id })">Review</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="appModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="appModalContent"></div>
+    </div>
+</div>

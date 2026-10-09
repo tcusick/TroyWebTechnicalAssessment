@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "identityapp1": {
-      "connectionInfo": "App registration: X-Connect API, Tenant: My NewCo Org (mynewcoorg.onmicrosoft.com - AAD B2C)",
-      "type": "identityapp.default"
-    }
-  }
-}

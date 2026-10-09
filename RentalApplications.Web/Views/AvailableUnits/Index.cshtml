@@ -1,0 +1,34 @@
+@model IList<AvailableUnitViewModel>
+@{
+    ViewData["Title"] = "Available units";
+}
+
+<h1 class="mb-3">@ViewData["Title"]</h1>
+
+@if (Model.Count == 0)
+{
+    <p class="text-muted">No units are available right now.</p>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var unit in Model)
+        {
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h2 class="h5">@unit.PropertyName — Unit @unit.UnitNumber</h2>
+                        <p class="text-muted small mb-2">@unit.Address</p>
+                        <p class="mb-1">@unit.Bedrooms bedroom · @unit.UnitTypeName</p>
+                        <p class="fw-semibold">@unit.MonthlyRent.ToString("C") / month</p>
+                        <form asp-controller="Applications" asp-action="Create" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="unitId" value="@unit.UnitId" />
+                            <button type="submit" class="btn btn-primary">Start application</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

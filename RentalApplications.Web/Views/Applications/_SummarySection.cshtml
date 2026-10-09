@@ -1,0 +1,31 @@
+@model RentalApplicationFormViewModel
+
+<div class="mb-4">
+    <h2 class="h6">Applicant information</h2>
+    @{
+        var summaryModel = new RentalApplicationFormViewModel
+        {
+            IsReadOnly = true,
+            ApplicantInformation = Model.ApplicantInformation
+        };
+    }
+    <partial name="_ApplicantInformationSection" model="summaryModel" />
+</div>
+
+<div class="mb-4">
+    <h2 class="h6">Residence history</h2>
+    @{
+        var residenceSummary = new RentalApplicationFormViewModel
+        {
+            IsReadOnly = true,
+            Id = Model.Id,
+            ResidenceHistory = Model.ResidenceHistory
+        };
+    }
+    <partial name="_ResidenceHistorySection" model="residenceSummary" />
+</div>
+
+@if (!Model.CanSubmit && !Model.IsReadOnly)
+{
+    <p class="text-warning">Complete and save each section before submitting.</p>
+}
