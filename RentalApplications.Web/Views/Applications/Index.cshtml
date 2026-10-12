@@ -14,7 +14,7 @@
             <option value="">All</option>
             @foreach (ApplicationStatus status in Enum.GetValues<ApplicationStatus>())
             {
-                <option value="@status" selected="@(filter.Status == status)">@status</option>
+                <option value="@status" selected="@(filter.Status == status)">@status.Humanize()</option>
             }
         </select>
     </div>
@@ -50,7 +50,7 @@
                 <td>@item.ApplicantName</td>
                 <td>@item.PropertyName</td>
                 <td>@item.UnitNumber</td>
-                <td>@item.Status</td>
+                <td>@item.Status.Humanize()</td>
                 <td class="text-end">
                     <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@item.Id">Open</a>
                     @if (User.IsInRole(AppRoles.PropertyManager) && item.Status == ApplicationStatus.Submitted)

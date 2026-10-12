@@ -1,4 +1,9 @@
 @model ResidenceFormViewModel
+@using RentalApplications.Validation
+@{
+    var minPastDate = DateValidationRules.MinHistoricalDate.ToString("yyyy-MM-dd");
+    var maxPastDate = DateValidationRules.UtcToday.ToString("yyyy-MM-dd");
+}
 
 <div class="modal-header">
     <h5 class="modal-title">@(Model.Id is > 0 ? "Edit residence" : "Add residence")</h5>
@@ -9,10 +14,9 @@
         <input type="hidden" asp-for="ApplicationId" />
         <input type="hidden" asp-for="Id" />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="mb-3">
-            <label asp-for="Address" class="form-label"></label>
-            <input asp-for="Address" class="form-control" />
-            <span asp-validation-for="Address" class="text-danger"></span>
+        <div class="mb-2">
+            <span class="form-label d-block">Address</span>
+            @Html.EditorFor(m => m.Address)
         </div>
         <div class="mb-3">
             <label asp-for="LandlordName" class="form-label"></label>
@@ -21,18 +25,18 @@
         </div>
         <div class="mb-3">
             <label asp-for="LandlordPhone" class="form-label"></label>
-            <input asp-for="LandlordPhone" class="form-control" />
+            <input asp-for="LandlordPhone" class="form-control" type="tel" autocomplete="tel" />
             <span asp-validation-for="LandlordPhone" class="text-danger"></span>
         </div>
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label asp-for="MoveInDate" class="form-label"></label>
-                <input asp-for="MoveInDate" class="form-control" type="date" />
+                <input asp-for="MoveInDate" class="form-control" type="date" min="@minPastDate" max="@maxPastDate" id="residenceMoveInDate" />
                 <span asp-validation-for="MoveInDate" class="text-danger"></span>
             </div>
             <div class="col-md-6 mb-3">
                 <label asp-for="MoveOutDate" class="form-label"></label>
-                <input asp-for="MoveOutDate" class="form-control" type="date" />
+                <input asp-for="MoveOutDate" class="form-control" type="date" min="@minPastDate" max="@maxPastDate" id="residenceMoveOutDate" />
                 <span asp-validation-for="MoveOutDate" class="text-danger"></span>
             </div>
         </div>
@@ -42,3 +46,23 @@
         <button type="submit" class="btn btn-primary">Save</button>
     </div>
 </form>
+<script>
+    (function () {
+        const moveIn = document.getElementById('residenceMoveInDate');
+        const moveOut = document.getElementById('residenceMoveOutDate');
+        if (!moveIn || !moveOut) return;
+
+        function syncMoveOutMin() {
+            if (!moveIn.value) {
+                moveOut.min = '@minPastDate';
+                return;
+            }
+            const nextDay = new Date(moveIn.value + 'T00:00:00');
+            nextDay.setDate(nextDay.getDate() + 1);
+            moveOut.min = nextDay.toISOString().slice(0, 10);
+        }
+
+        moveIn.addEventListener('change', syncMoveOutMin);
+        syncMoveOutMin();
+    })();
+</script>

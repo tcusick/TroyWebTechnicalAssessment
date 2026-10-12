@@ -1,5 +1,6 @@
 using RentalApplications.Domain.Entities;
 using RentalApplications.Models.Applications;
+using RentalApplications.Models.Shared;
 
 namespace RentalApplications.Mapping;
 
@@ -8,13 +9,20 @@ namespace RentalApplications.Mapping;
 /// </summary>
 public static class ResidenceHistoryMappingExtensions
 {
+    private static StructuredAddressViewModel ToAddressViewModel(this ResidenceHistory residence) =>
+        StructuredAddressMappingExtensions.ToAddressViewModel(
+            residence.StreetAddress,
+            residence.City,
+            residence.State,
+            residence.PostalCode);
+
     /// <summary>
     /// Maps a residence to a list item on the application wizard.
     /// </summary>
     public static ResidenceHistoryItemViewModel ToItemViewModel(this ResidenceHistory residence) => new()
     {
         Id = residence.Id,
-        Address = residence.Address,
+        Address = residence.ToAddressViewModel(),
         LandlordName = residence.LandlordName,
         LandlordPhone = residence.LandlordPhone,
         MoveInDate = residence.MoveInDate,
@@ -28,7 +36,7 @@ public static class ResidenceHistoryMappingExtensions
     {
         ApplicationId = residence.RentalApplicationId,
         Id = residence.Id,
-        Address = residence.Address,
+        Address = residence.ToAddressViewModel(),
         LandlordName = residence.LandlordName,
         LandlordPhone = residence.LandlordPhone,
         MoveInDate = residence.MoveInDate,
@@ -40,7 +48,10 @@ public static class ResidenceHistoryMappingExtensions
     /// </summary>
     public static void ApplyForm(this ResidenceHistory residence, ResidenceFormViewModel model)
     {
-        residence.Address = model.Address;
+        residence.StreetAddress = model.Address.StreetAddress;
+        residence.City = model.Address.City;
+        residence.State = model.Address.State;
+        residence.PostalCode = model.Address.PostalCode;
         residence.LandlordName = model.LandlordName;
         residence.LandlordPhone = model.LandlordPhone;
         residence.MoveInDate = model.MoveInDate;

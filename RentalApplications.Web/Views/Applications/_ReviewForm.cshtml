@@ -1,4 +1,9 @@
 @model ReviewApplicationViewModel
+@using RentalApplications.Validation
+@{
+    var minLeaseStart = DateValidationRules.UtcToday.ToString("yyyy-MM-dd");
+    var maxLeaseStart = DateValidationRules.MaxLeaseStartDate.ToString("yyyy-MM-dd");
+}
 
 <div class="modal-header">
     <h5 class="modal-title">Review application</h5>
@@ -19,12 +24,12 @@
             </select>
         </div>
         <div class="mb-3" id="leaseStartGroup">
-            <label asp-for="LeaseStartDate" class="form-label">Lease start date</label>
-            <input asp-for="LeaseStartDate" class="form-control" type="date" />
+            <label asp-for="LeaseStartDate" class="form-label"></label>
+            <input asp-for="LeaseStartDate" class="form-control" type="date" min="@minLeaseStart" max="@maxLeaseStart" />
             <span asp-validation-for="LeaseStartDate" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <label asp-for="Comment" class="form-label">Comment</label>
+            <label asp-for="Comment" class="form-label"></label>
             <textarea asp-for="Comment" class="form-control" rows="3"></textarea>
             <span asp-validation-for="Comment" class="text-danger"></span>
         </div>

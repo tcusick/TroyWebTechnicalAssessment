@@ -1,6 +1,7 @@
 using RentalApplications.Domain;
 using RentalApplications.Domain.Entities;
 using RentalApplications.Models.Applications;
+using RentalApplications.Models.Shared;
 
 namespace RentalApplications.Mapping;
 
@@ -59,6 +60,17 @@ public static class RentalApplicationMappingExtensions
         model.CanSubmit = ApplicationPolicy.CanSubmit(application);
         model.CanWithdraw = ApplicationPolicy.CanWithdraw(application.Status) && presentation.IsApplicant;
         model.ShowManagerHistory = presentation.IsPropertyManager;
+        model.CurrentSection = application.CurrentSection;
+        if (model.CurrentSection != ApplicationSection.ApplicantInformation)
+        {
+            model.ApplicantInformation = application.ToApplicantInformationViewModel();
+        }
+        else if (string.IsNullOrWhiteSpace(model.ApplicantInformation.CurrentAddress.StreetAddress)
+                 && !string.IsNullOrWhiteSpace(application.CurrentStreetAddress))
+        {
+            model.ApplicantInformation.CurrentAddress = application.ToCurrentAddressViewModel();
+        }
+
         model.ResidenceHistory.Items = application.ResidenceHistories
             .OrderByDescending(r => r.MoveInDate)
             .Select(r => r.ToItemViewModel())
@@ -70,7 +82,15 @@ public static class RentalApplicationMappingExtensions
         ApplicantName = application.ApplicantName,
         Phone = application.Phone,
         Email = application.Email,
-        CurrentAddress = application.CurrentAddress
+        CurrentAddress = application.ToCurrentAddressViewModel()
+    };
+
+    private static StructuredAddressViewModel ToCurrentAddressViewModel(this RentalApplication application) => new()
+    {
+        StreetAddress = application.CurrentStreetAddress,
+        City = application.CurrentCity,
+        State = application.CurrentState,
+        PostalCode = application.CurrentPostalCode
     };
 
     private static ResidenceHistorySectionViewModel ToResidenceHistorySectionViewModel(this RentalApplication application) => new()

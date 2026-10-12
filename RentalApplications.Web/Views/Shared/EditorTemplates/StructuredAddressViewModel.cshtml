@@ -1,0 +1,24 @@
+@model RentalApplications.Models.Shared.StructuredAddressViewModel
+
+<div class="mb-3">
+    <label asp-for="StreetAddress" class="form-label"></label>
+    <input asp-for="StreetAddress" class="form-control" autocomplete="street-address" />
+    <span asp-validation-for="StreetAddress" class="text-danger"></span>
+</div>
+<div class="row">
+    <div class="col-md-5 mb-3">
+        <label asp-for="City" class="form-label"></label>
+        <input asp-for="City" class="form-control" autocomplete="address-level2" />
+        <span asp-validation-for="City" class="text-danger"></span>
+    </div>
+    <div class="col-md-3 mb-3">
+        <label asp-for="State" class="form-label"></label>
+        <input asp-for="State" class="form-control" autocomplete="address-level1" maxlength="2" />
+        <span asp-validation-for="State" class="text-danger"></span>
+    </div>
+    <div class="col-md-4 mb-3">
+        <label asp-for="PostalCode" class="form-label"></label>
+        <input asp-for="PostalCode" class="form-control" autocomplete="postal-code" />
+        <span asp-validation-for="PostalCode" class="text-danger"></span>
+    </div>
+</div>

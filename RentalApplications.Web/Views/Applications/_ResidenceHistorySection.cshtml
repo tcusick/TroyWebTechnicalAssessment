@@ -30,7 +30,7 @@
                 @foreach (var item in Model.ResidenceHistory.Items)
                 {
                     <tr>
-                        <td>@item.Address</td>
+                        <td>@item.Address.ToDisplayString()</td>
                         <td>@item.LandlordName</td>
                         <td>@item.LandlordPhone</td>
                         <td>@item.MoveInDate.ToString("d")</td>

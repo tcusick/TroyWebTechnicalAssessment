@@ -18,14 +18,19 @@ public class ApplicationsController : Controller
 {
     private readonly IRentalApplicationService _applications;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ApplicationsController"/> class.
     /// </summary>
-    public ApplicationsController(IRentalApplicationService applications, UserManager<ApplicationUser> userManager)
+    public ApplicationsController(
+        IRentalApplicationService applications,
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager)
     {
         _applications = applications;
         _userManager = userManager;
+        _signInManager = signInManager;
     }
 
     /// <summary>
@@ -59,9 +64,16 @@ public class ApplicationsController : Controller
     public async Task<IActionResult> Create(int unitId)
     {
         var user = await _userManager.GetUserAsync(User);
+        if (user is null)
+        {
+            await _signInManager.SignOutAsync();
+            TempData["Error"] = "Your session is no longer valid. Please sign in again.";
+            return RedirectToAction("Login", "Account");
+        }
+
         var result = await _applications.TryCreateAsync(
             unitId,
-            user!.Id,
+            user.Id,
             user.DisplayName,
             user.Email ?? string.Empty);
 
@@ -124,14 +136,15 @@ public class ApplicationsController : Controller
         switch (model.Command?.ToLowerInvariant())
         {
             case "back":
-                model.CurrentSection = model.CurrentSection switch
+                var backSection = application.CurrentSection switch
                 {
                     ApplicationSection.ResidenceHistory => ApplicationSection.ApplicantInformation,
                     ApplicationSection.Summary => ApplicationSection.ResidenceHistory,
-                    _ => model.CurrentSection
+                    _ => application.CurrentSection
                 };
-                await _applications.SetCurrentSectionAsync(application, model.CurrentSection);
-                return View(application.ToEditFormViewModel(FormPresentation(model.CurrentSection)));
+                await _applications.SetCurrentSectionAsync(application, backSection);
+                ModelState.Clear();
+                return View(application.ToEditFormViewModel(FormPresentation(backSection)));
 
             case "continue":
                 return await HandleContinueAsync(application, model);
@@ -205,11 +218,6 @@ public class ApplicationsController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Review(ReviewApplicationViewModel model)
     {
-        if (ApplicationReviewPolicy.RequiresComment(model.Outcome) && string.IsNullOrWhiteSpace(model.Comment))
-        {
-            ModelState.AddModelError(nameof(model.Comment), "A comment is required for this outcome.");
-        }
-
         if (!ModelState.IsValid)
         {
             return PartialView("_ReviewForm", model);
@@ -238,7 +246,12 @@ public class ApplicationsController : Controller
             return Forbid();
         }
 
-        switch (model.CurrentSection)
+        ModelState.Clear();
+
+        // Posted CurrentSection can bind incorrectly when earlier wizard fields are not in the form.
+        var activeSection = application.CurrentSection;
+
+        switch (activeSection)
         {
             case ApplicationSection.ApplicantInformation:
                 if (!TryValidateModel(model.ApplicantInformation, prefix: nameof(RentalApplicationFormViewModel.ApplicantInformation)))
@@ -253,7 +266,10 @@ public class ApplicationsController : Controller
                     model.ApplicantInformation.ApplicantName,
                     model.ApplicantInformation.Phone,
                     model.ApplicantInformation.Email,
-                    model.ApplicantInformation.CurrentAddress);
+                    model.ApplicantInformation.CurrentAddress.StreetAddress,
+                    model.ApplicantInformation.CurrentAddress.City,
+                    model.ApplicantInformation.CurrentAddress.State,
+                    model.ApplicantInformation.CurrentAddress.PostalCode);
                 break;
 
             case ApplicationSection.ResidenceHistory:

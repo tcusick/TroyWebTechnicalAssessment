@@ -89,7 +89,7 @@ public class RentalApplicationService : IRentalApplicationService
             return (false, "Unit not found.", 0);
         }
 
-        if (!_leaseAvailability.IsUnitAvailableOnDate(unit.Leases, today))
+        if (!_leaseAvailability.IsUnitAvailableOnDate(unit.Leases ?? [], today))
         {
             _logger.LogWarning("Create application failed: unit {UnitId} unavailable for user {UserId}", unitId, userId);
             return (false, "This unit is no longer available.", 0);
@@ -150,13 +150,19 @@ public class RentalApplicationService : IRentalApplicationService
         string name,
         string phone,
         string email,
-        string address,
+        string streetAddress,
+        string city,
+        string state,
+        string postalCode,
         CancellationToken cancellationToken = default)
     {
         application.ApplicantName = name;
         application.Phone = phone;
         application.Email = email;
-        application.CurrentAddress = address;
+        application.CurrentStreetAddress = streetAddress;
+        application.CurrentCity = city;
+        application.CurrentState = state;
+        application.CurrentPostalCode = postalCode;
         application.ApplicantInformationSaved = true;
         application.CurrentSection = ApplicationSection.ResidenceHistory;
         await _db.SaveChangesAsync(cancellationToken);

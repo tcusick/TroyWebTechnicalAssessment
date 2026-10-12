@@ -1,0 +1,298 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RentalApplications.Services</name>
+    </assembly>
+    <members>
+        <member name="T:RentalApplications.Services.Abstractions.IApplicationStatusHistoryService">
+            <summary>
+            Status change audit trail for rental applications.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IApplicationStatusHistoryService.GetHistoryAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Returns status history entries for an application, newest first.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Services.Abstractions.IAvailableUnitsService">
+            <summary>
+            Units that applicants may apply for on the current date.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IAvailableUnitsService.GetAvailableUnitsAsync(System.Threading.CancellationToken)">
+            <summary>
+            Returns units not blocked by an active lease today.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Services.Abstractions.ILeaseAvailabilityService">
+            <summary>
+            Lease date calculations and overlap checks used for availability and approval.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.ILeaseAvailabilityService.CalculateEndDate(System.DateOnly)">
+            <summary>
+            Calculates the standard lease end date from a start date.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.ILeaseAvailabilityService.IsUnitAvailableOnDate(System.Collections.Generic.IEnumerable{RentalApplications.Domain.Entities.Lease},System.DateOnly)">
+            <summary>
+            Returns whether a unit has no lease covering the given date.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.ILeaseAvailabilityService.HasActiveLeaseOnDate(System.Collections.Generic.IEnumerable{RentalApplications.Domain.Entities.Lease},System.DateOnly)">
+            <summary>
+            Returns whether any lease is active on the given date.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Services.Abstractions.IPropertyManagementService">
+            <summary>
+            CRUD and validation for properties, units, and unit type assignment.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IPropertyManagementService.GetPropertiesWithUnitsAsync(System.Threading.CancellationToken)">
+            <summary>
+            Loads all properties with their units for the manager index page.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IPropertyManagementService.GetPropertyAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Loads a single property by id.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IPropertyManagementService.SavePropertyAsync(RentalApplications.Domain.Entities.Property,System.Threading.CancellationToken)">
+            <summary>
+            Inserts or updates a property and returns its id.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IPropertyManagementService.TryDeletePropertyAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Deletes a property when it has no units; returns an error message when deletion is blocked.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IPropertyManagementService.GetUnitAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Loads a unit with its property and unit type.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IPropertyManagementService.GetUnitsForPropertyAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Loads units belonging to a property.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IPropertyManagementService.GetSelectableUnitTypesAsync(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Returns unit types that may be selected in the unit form (active types plus the current type when editing).
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IPropertyManagementService.ValidateUnitTypeAsync(System.Int32,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <summary>
+            Validates that the chosen unit type may be assigned to the unit.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IPropertyManagementService.SaveUnitAsync(RentalApplications.Domain.Entities.Unit,System.Threading.CancellationToken)">
+            <summary>
+            Inserts or updates a unit and returns its id.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IPropertyManagementService.TryDeleteUnitAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Deletes a unit when allowed; returns success, error message, and parent property id.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Services.Abstractions.IRentalApplicationService">
+            <summary>
+            Application lifecycle: listing, wizard progress, submission, review, and status changes.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IRentalApplicationService.ListAsync(System.Nullable{RentalApplications.Domain.Entities.ApplicationStatus},System.Nullable{System.Int32},System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Lists applications for an applicant or all applications for a property manager, with optional filters.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IRentalApplicationService.GetPropertiesForFilterAsync(System.Threading.CancellationToken)">
+            <summary>
+            Returns properties used to populate the manager application list filter.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IRentalApplicationService.TryCreateAsync(System.Int32,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Creates a draft application for a unit when the unit is available and the applicant has no open application for it.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IRentalApplicationService.GetApplicationDetailAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Loads an application with unit, property, and residence history for display and editing.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IRentalApplicationService.SetCurrentSectionAsync(RentalApplications.Domain.Entities.RentalApplication,RentalApplications.Domain.Entities.ApplicationSection,System.Threading.CancellationToken)">
+            <summary>
+            Persists the wizard section the applicant is viewing.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IRentalApplicationService.SaveApplicantInformationAsync(RentalApplications.Domain.Entities.RentalApplication,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Saves applicant information and marks that section complete on the application.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IRentalApplicationService.MarkResidenceHistoryCompleteAsync(RentalApplications.Domain.Entities.RentalApplication,System.Threading.CancellationToken)">
+            <summary>
+            Marks the residence history section complete after validation in the UI.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IRentalApplicationService.ChangeStatusAsync(RentalApplications.Domain.Entities.RentalApplication,RentalApplications.Domain.Entities.ApplicationStatus,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Changes application status and records a history entry.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IRentalApplicationService.TrySubmitAsync(RentalApplications.Domain.Entities.RentalApplication,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Validates and submits a draft or returned application.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IRentalApplicationService.TryReviewAsync(System.Int32,RentalApplications.Domain.ReviewOutcome,System.String,System.DateOnly,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Processes a manager review (approve, return, or deny) and creates a lease on approval.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Services.Abstractions.IResidenceHistoryService">
+            <summary>
+            Prior residence rows attached to a rental application.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IResidenceHistoryService.GetAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Loads a residence row with its parent application.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IResidenceHistoryService.SaveAsync(RentalApplications.Domain.Entities.ResidenceHistory,System.Threading.CancellationToken)">
+            <summary>
+            Inserts or updates a residence row and returns its id.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IResidenceHistoryService.TryDeleteAsync(System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Deletes a residence row when the parent application is editable.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.Abstractions.IResidenceHistoryService.CanApplicantEditApplicationAsync(System.Int32,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Determines whether the applicant may modify residence data on the given application.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Services.ApplicationStatusHistoryService">
+            <inheritdoc cref="T:RentalApplications.Services.Abstractions.IApplicationStatusHistoryService" />
+        </member>
+        <member name="M:RentalApplications.Services.ApplicationStatusHistoryService.GetHistoryAsync(System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:RentalApplications.Services.AvailableUnitsService">
+            <inheritdoc cref="T:RentalApplications.Services.Abstractions.IAvailableUnitsService" />
+        </member>
+        <member name="M:RentalApplications.Services.AvailableUnitsService.GetAvailableUnitsAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:RentalApplications.Services.DependencyInjection">
+            <summary>
+            Registers application services with dependency injection.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Services.DependencyInjection.AddRentalApplicationsServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Adds rental application service implementations to the service collection.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Services.LeaseAvailabilityService">
+            <inheritdoc cref="T:RentalApplications.Services.Abstractions.ILeaseAvailabilityService" />
+        </member>
+        <member name="M:RentalApplications.Services.LeaseAvailabilityService.CalculateEndDate(System.DateOnly)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.LeaseAvailabilityService.IsUnitAvailableOnDate(System.Collections.Generic.IEnumerable{RentalApplications.Domain.Entities.Lease},System.DateOnly)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.LeaseAvailabilityService.HasActiveLeaseOnDate(System.Collections.Generic.IEnumerable{RentalApplications.Domain.Entities.Lease},System.DateOnly)">
+            <inheritdoc />
+        </member>
+        <member name="T:RentalApplications.Services.PropertyManagementService">
+            <inheritdoc cref="T:RentalApplications.Services.Abstractions.IPropertyManagementService" />
+        </member>
+        <member name="M:RentalApplications.Services.PropertyManagementService.GetPropertiesWithUnitsAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.PropertyManagementService.GetPropertyAsync(System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.PropertyManagementService.SavePropertyAsync(RentalApplications.Domain.Entities.Property,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.PropertyManagementService.TryDeletePropertyAsync(System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.PropertyManagementService.GetUnitAsync(System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.PropertyManagementService.GetUnitsForPropertyAsync(System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.PropertyManagementService.GetSelectableUnitTypesAsync(System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.PropertyManagementService.ValidateUnitTypeAsync(System.Int32,System.Nullable{System.Int32},System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.PropertyManagementService.SaveUnitAsync(RentalApplications.Domain.Entities.Unit,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.PropertyManagementService.TryDeleteUnitAsync(System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:RentalApplications.Services.RentalApplicationService">
+            <inheritdoc cref="T:RentalApplications.Services.Abstractions.IRentalApplicationService" />
+        </member>
+        <member name="M:RentalApplications.Services.RentalApplicationService.ListAsync(System.Nullable{RentalApplications.Domain.Entities.ApplicationStatus},System.Nullable{System.Int32},System.String,System.Boolean,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.RentalApplicationService.GetPropertiesForFilterAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.RentalApplicationService.TryCreateAsync(System.Int32,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.RentalApplicationService.GetApplicationDetailAsync(System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.RentalApplicationService.SetCurrentSectionAsync(RentalApplications.Domain.Entities.RentalApplication,RentalApplications.Domain.Entities.ApplicationSection,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.RentalApplicationService.SaveApplicantInformationAsync(RentalApplications.Domain.Entities.RentalApplication,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.RentalApplicationService.MarkResidenceHistoryCompleteAsync(RentalApplications.Domain.Entities.RentalApplication,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.RentalApplicationService.ChangeStatusAsync(RentalApplications.Domain.Entities.RentalApplication,RentalApplications.Domain.Entities.ApplicationStatus,System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.RentalApplicationService.TrySubmitAsync(RentalApplications.Domain.Entities.RentalApplication,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.RentalApplicationService.TryReviewAsync(System.Int32,RentalApplications.Domain.ReviewOutcome,System.String,System.DateOnly,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:RentalApplications.Services.ResidenceHistoryService">
+            <inheritdoc cref="T:RentalApplications.Services.Abstractions.IResidenceHistoryService" />
+        </member>
+        <member name="M:RentalApplications.Services.ResidenceHistoryService.GetAsync(System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.ResidenceHistoryService.SaveAsync(RentalApplications.Domain.Entities.ResidenceHistory,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.ResidenceHistoryService.TryDeleteAsync(System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:RentalApplications.Services.ResidenceHistoryService.CanApplicantEditApplicationAsync(System.Int32,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

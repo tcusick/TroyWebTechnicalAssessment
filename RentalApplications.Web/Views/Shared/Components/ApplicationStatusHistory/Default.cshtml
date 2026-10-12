@@ -11,7 +11,7 @@ else
         {
             <li class="list-group-item px-0">
                 <div class="d-flex justify-content-between">
-                    <span><strong>@entry.FromStatus</strong> → <strong>@entry.ToStatus</strong></span>
+                    <span><strong>@entry.FromStatus.Humanize()</strong> → <strong>@entry.ToStatus.Humanize()</strong></span>
                     <span class="text-muted small">@entry.ChangedAt.ToLocalTime().ToString("g")</span>
                 </div>
                 <div class="small text-muted">@entry.ChangedByName</div>

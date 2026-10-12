@@ -57,7 +57,6 @@ public static class DataSeeder
 
         var unitFaker = new Faker<Unit>()
             .RuleFor(u => u.UnitNumber, f => f.Random.Replace("###"))
-            .RuleFor(u => u.Bedrooms, f => f.Random.Int(0, 3))
             .RuleFor(u => u.MonthlyRent, f => f.Finance.Amount(900, 2800, 0));
 
         var units = new List<Unit>();
@@ -65,14 +64,18 @@ public static class DataSeeder
         {
             for (var i = 0; i < 4; i++)
             {
+                var unitType = unitTypes[fakerIndex(i)];
                 var unit = unitFaker.Generate();
                 unit.PropertyId = property.Id;
-                unit.UnitTypeId = unitTypes[fakerIndex(i)].Id;
+                unit.UnitTypeId = unitType.Id;
+                unit.Bedrooms = BedroomsForSeedUnitType(unitType.Name);
                 units.Add(unit);
             }
         }
 
-        units[0].UnitTypeId = unitTypes[3].Id;
+        var loftType = unitTypes[3];
+        units[0].UnitTypeId = loftType.Id;
+        units[0].Bedrooms = BedroomsForSeedUnitType(loftType.Name);
         db.Units.AddRange(units);
         await db.SaveChangesAsync();
 
@@ -106,6 +109,15 @@ public static class DataSeeder
         logger.LogInformation("Sample data seed completed.");
 
         static int fakerIndex(int i) => i % 3;
+
+        static int BedroomsForSeedUnitType(string unitTypeName) => unitTypeName switch
+        {
+            "Studio" => 0,
+            "One Bedroom" => 1,
+            "Two Bedroom" => 2,
+            "Loft" => 1,
+            _ => 1
+        };
     }
 
     private static async Task EnsureRolesAsync(RoleManager<IdentityRole> roleManager)
@@ -163,12 +175,18 @@ public static class DataSeeder
             ApplicantName = applicant.DisplayName,
             Phone = faker.Phone.PhoneNumber(),
             Email = applicant.Email!,
-            CurrentAddress = faker.Address.FullAddress()
+            CurrentStreetAddress = faker.Address.StreetAddress(),
+            CurrentCity = faker.Address.City(),
+            CurrentState = faker.Address.StateAbbr(),
+            CurrentPostalCode = faker.Address.ZipCode()
         };
 
         application.ResidenceHistories.Add(new ResidenceHistory
         {
-            Address = faker.Address.FullAddress(),
+            StreetAddress = faker.Address.StreetAddress(),
+            City = faker.Address.City(),
+            State = faker.Address.StateAbbr(),
+            PostalCode = faker.Address.ZipCode(),
             LandlordName = faker.Name.FullName(),
             LandlordPhone = faker.Phone.PhoneNumber(),
             MoveInDate = today.AddYears(-2),

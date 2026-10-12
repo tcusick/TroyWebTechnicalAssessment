@@ -1,0 +1,413 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RentalApplications.Web</name>
+    </assembly>
+    <members>
+        <member name="T:RentalApplications.Controllers.AccountController">
+            <summary>
+            Sign-in, registration, and sign-out for ASP.NET Core Identity users.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Controllers.AccountController.#ctor(Microsoft.AspNetCore.Identity.UserManager{RentalApplications.Data.ApplicationUser},Microsoft.AspNetCore.Identity.SignInManager{RentalApplications.Data.ApplicationUser},Microsoft.Extensions.Logging.ILogger{RentalApplications.Controllers.AccountController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RentalApplications.Controllers.AccountController"/> class.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Controllers.AccountController.Login(System.String)">
+            <summary>
+            Displays the login form.
+            </summary>
+            <param name="returnUrl">Optional local URL to redirect to after a successful login.</param>
+            <returns>The login view.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.AccountController.Login(RentalApplications.Models.Account.LoginViewModel)">
+            <summary>
+            Authenticates a user with email and password.
+            </summary>
+            <param name="model">Credentials and optional return URL.</param>
+            <returns>Redirects on success; otherwise redisplays the login view with validation errors.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.AccountController.Register">
+            <summary>
+            Displays the registration form.
+            </summary>
+            <returns>The registration view.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.AccountController.Register(RentalApplications.Models.Account.RegisterViewModel)">
+            <summary>
+            Creates a new user account and signs the user in.
+            </summary>
+            <param name="model">Profile, credentials, and selected role (Applicant or Property Manager).</param>
+            <returns>Redirects to home on success; otherwise redisplays the registration view.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.AccountController.Logout">
+            <summary>
+            Signs out the current user.
+            </summary>
+            <returns>Redirects to the home page.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.AccountController.AccessDenied">
+            <summary>
+            Displays the access-denied page when authorization fails.
+            </summary>
+            <returns>The access-denied view.</returns>
+        </member>
+        <member name="T:RentalApplications.Controllers.ApplicationsController">
+            <summary>
+            Rental application list, multi-step edit wizard, withdrawal, and property-manager review.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Controllers.ApplicationsController.#ctor(RentalApplications.Services.Abstractions.IRentalApplicationService,Microsoft.AspNetCore.Identity.UserManager{RentalApplications.Data.ApplicationUser})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RentalApplications.Controllers.ApplicationsController"/> class.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Controllers.ApplicationsController.Index(RentalApplications.Models.Applications.ApplicationListFilterViewModel)">
+            <summary>
+            Lists applications visible to the signed-in user, with optional manager filters.
+            </summary>
+            <param name="filter">Optional status and property filters (property filter is for managers).</param>
+            <returns>The application list view.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.ApplicationsController.Create(System.Int32)">
+            <summary>
+            Starts a new draft application for the given unit.
+            </summary>
+            <param name="unitId">Unit to apply for.</param>
+            <returns>Redirects to the edit wizard on success, or back to available units with an error message.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.ApplicationsController.Edit(System.Int32)">
+            <summary>
+            Shows the application edit wizard for applicants and read-only detail for managers.
+            </summary>
+            <param name="id">Application identifier.</param>
+            <returns>The edit view, or <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> / <see cref="T:Microsoft.AspNetCore.Mvc.ForbidResult"/> when not allowed.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.ApplicationsController.Edit(RentalApplications.Models.Applications.RentalApplicationFormViewModel)">
+            <summary>
+            Handles wizard navigation (back, continue, submit) for an application.
+            </summary>
+            <param name="model">Posted form state including the <see cref="P:RentalApplications.Models.Applications.RentalApplicationFormViewModel.Command"/> value.</param>
+            <returns>The appropriate view, redirect, or error result.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.ApplicationsController.Withdraw(System.Int32)">
+            <summary>
+            Withdraws a draft, submitted, or returned application.
+            </summary>
+            <param name="id">Application identifier.</param>
+            <returns>Redirects to the application list.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.ApplicationsController.ReviewModal(System.Int32)">
+            <summary>
+            Returns the property-manager review modal partial for a submitted application.
+            </summary>
+            <param name="id">Application identifier.</param>
+            <returns>The review form partial view, or <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> when review is not allowed.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.ApplicationsController.Review(RentalApplications.Models.Applications.ReviewApplicationViewModel)">
+            <summary>
+            Approves, returns, or denies a submitted application and optionally creates a lease on approval.
+            </summary>
+            <param name="model">Review outcome, comment, and lease start date.</param>
+            <returns>JSON success payload, or the review partial with validation errors.</returns>
+        </member>
+        <member name="T:RentalApplications.Controllers.AvailableUnitsController">
+            <summary>
+            Browse rentable units that are not blocked by an active lease on the current date.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Controllers.AvailableUnitsController.#ctor(RentalApplications.Services.Abstractions.IAvailableUnitsService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RentalApplications.Controllers.AvailableUnitsController"/> class.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Controllers.AvailableUnitsController.Index">
+            <summary>
+            Lists units available for new rental applications.
+            </summary>
+            <returns>The available units view.</returns>
+        </member>
+        <member name="T:RentalApplications.Controllers.HomeController">
+            <summary>
+            Landing page and error handling for the site.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Controllers.HomeController.#ctor(Microsoft.Extensions.Logging.ILogger{RentalApplications.Controllers.HomeController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RentalApplications.Controllers.HomeController"/> class.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Controllers.HomeController.Index">
+            <summary>
+            Routes signed-in users to their primary area or shows the public landing page.
+            </summary>
+            <returns>Redirect for known roles, otherwise the home view.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.HomeController.Error">
+            <summary>
+            Displays a diagnostic error page (non-cached).
+            </summary>
+            <returns>The error view with a request correlation id.</returns>
+        </member>
+        <member name="T:RentalApplications.Controllers.PropertiesController">
+            <summary>
+            Property and unit maintenance for property managers (including modal CRUD).
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Controllers.PropertiesController.#ctor(RentalApplications.Services.Abstractions.IPropertyManagementService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RentalApplications.Controllers.PropertiesController"/> class.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Controllers.PropertiesController.Index">
+            <summary>
+            Lists all properties and their units.
+            </summary>
+            <returns>The properties index view.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.PropertiesController.CreatePropertyModal">
+            <summary>
+            Returns an empty property form partial for create.
+            </summary>
+            <returns>The property form partial view.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.PropertiesController.EditPropertyModal(System.Int32)">
+            <summary>
+            Returns a property form partial populated for edit.
+            </summary>
+            <param name="id">Property identifier.</param>
+            <returns>The property form partial, or <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/>.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.PropertiesController.SaveProperty(RentalApplications.Models.Properties.PropertyFormViewModel)">
+            <summary>
+            Creates or updates a property.
+            </summary>
+            <param name="model">Property fields from the modal form.</param>
+            <returns>JSON success, the partial on validation failure, or <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/>.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.PropertiesController.DeleteProperty(System.Int32)">
+            <summary>
+            Deletes a property when it has no units.
+            </summary>
+            <param name="id">Property identifier.</param>
+            <returns>JSON success or a bad request with an error message.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.PropertiesController.CreateUnitModal(System.Int32)">
+            <summary>
+            Returns an empty unit form partial for create.
+            </summary>
+            <param name="propertyId">Parent property identifier.</param>
+            <returns>The unit form partial view.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.PropertiesController.EditUnitModal(System.Int32)">
+            <summary>
+            Returns a unit form partial populated for edit.
+            </summary>
+            <param name="id">Unit identifier.</param>
+            <returns>The unit form partial, or <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/>.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.PropertiesController.SaveUnit(RentalApplications.Models.Properties.UnitFormViewModel)">
+            <summary>
+            Creates or updates a unit under a property.
+            </summary>
+            <param name="model">Unit fields from the modal form.</param>
+            <returns>JSON success with property id, the partial on validation failure, or <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/>.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.PropertiesController.DeleteUnit(System.Int32)">
+            <summary>
+            Deletes a unit when it has no blocking leases or applications.
+            </summary>
+            <param name="id">Unit identifier.</param>
+            <returns>JSON success with property id, or a bad request with an error message.</returns>
+        </member>
+        <member name="T:RentalApplications.Controllers.ResidencesController">
+            <summary>
+            Modal CRUD for prior residence entries on a rental application.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Controllers.ResidencesController.#ctor(RentalApplications.Services.Abstractions.IResidenceHistoryService,Microsoft.AspNetCore.Identity.UserManager{RentalApplications.Data.ApplicationUser})">
+            <summary>
+            Initializes a new instance of the <see cref="T:RentalApplications.Controllers.ResidencesController"/> class.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Controllers.ResidencesController.CreateModal(System.Int32)">
+            <summary>
+            Returns an empty residence form partial for create.
+            </summary>
+            <param name="applicationId">Parent application identifier.</param>
+            <returns>The residence form partial, or <see cref="T:Microsoft.AspNetCore.Mvc.ForbidResult"/> when the application is not editable.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.ResidencesController.EditModal(System.Int32)">
+            <summary>
+            Returns a residence form partial populated for edit.
+            </summary>
+            <param name="id">Residence history identifier.</param>
+            <returns>The residence form partial, or <see cref="T:Microsoft.AspNetCore.Mvc.ForbidResult"/>.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.ResidencesController.Save(RentalApplications.Models.Applications.ResidenceFormViewModel)">
+            <summary>
+            Creates or updates a residence history row for an application.
+            </summary>
+            <param name="model">Residence fields from the modal form.</param>
+            <returns>JSON success with application id, the partial on validation failure, or <see cref="T:Microsoft.AspNetCore.Mvc.ForbidResult"/>.</returns>
+        </member>
+        <member name="M:RentalApplications.Controllers.ResidencesController.Delete(System.Int32)">
+            <summary>
+            Deletes a residence history row.
+            </summary>
+            <param name="id">Residence history identifier.</param>
+            <returns>JSON success with application id, or <see cref="T:Microsoft.AspNetCore.Mvc.ForbidResult"/>.</returns>
+        </member>
+        <member name="T:RentalApplications.Mapping.ApplicationListMappingExtensions">
+            <summary>
+            Maps service list rows to application list view models.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Mapping.ApplicationListMappingExtensions.ToListItemViewModel(RentalApplications.Services.Models.ApplicationListRow)">
+            <summary>
+            Maps a list row from the application service to the index view model.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Mapping.AvailableUnitMappingExtensions">
+            <summary>
+            Maps available unit query rows to browse view models.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Mapping.AvailableUnitMappingExtensions.ToViewModel(RentalApplications.Services.Models.AvailableUnitRow)">
+            <summary>
+            Maps an available unit row to the browse units view model.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Mapping.PropertyMappingExtensions">
+            <summary>
+            Maps between <see cref="T:RentalApplications.Domain.Entities.Property"/> entities and property form view models.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Mapping.PropertyMappingExtensions.ToFormViewModel(RentalApplications.Domain.Entities.Property)">
+            <summary>
+            Builds a form view model from a property entity.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Mapping.PropertyMappingExtensions.ApplyForm(RentalApplications.Domain.Entities.Property,RentalApplications.Models.Properties.PropertyFormViewModel)">
+            <summary>
+            Copies posted form values onto a property entity.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Mapping.ApplicationFormPresentation">
+            <summary>
+            Role and section flags come from the HTTP request; they are not stored on the entity.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Mapping.ApplicationFormPresentation.#ctor(System.Nullable{RentalApplications.Domain.Entities.ApplicationSection},System.Boolean,System.Boolean)">
+            <summary>
+            Role and section flags come from the HTTP request; they are not stored on the entity.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Mapping.RentalApplicationMappingExtensions">
+            <summary>
+            Maps rental application entities to the multi-step edit form view model.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Mapping.RentalApplicationMappingExtensions.ToEditFormViewModel(RentalApplications.Domain.Entities.RentalApplication,RentalApplications.Mapping.ApplicationFormPresentation)">
+            <summary>
+            Builds the full edit wizard view model, including role-based read-only and action flags.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Mapping.RentalApplicationMappingExtensions.RefreshEditFormShell(RentalApplications.Models.Applications.RentalApplicationFormViewModel,RentalApplications.Domain.Entities.RentalApplication,RentalApplications.Mapping.ApplicationFormPresentation)">
+            <summary>
+            Refreshes display metadata on a posted form after validation errors without rebuilding nested sections.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Mapping.ResidenceHistoryMappingExtensions">
+            <summary>
+            Maps between <see cref="T:RentalApplications.Domain.Entities.ResidenceHistory"/> entities and residence view models.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Mapping.ResidenceHistoryMappingExtensions.ToItemViewModel(RentalApplications.Domain.Entities.ResidenceHistory)">
+            <summary>
+            Maps a residence to a list item on the application wizard.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Mapping.ResidenceHistoryMappingExtensions.ToFormViewModel(RentalApplications.Domain.Entities.ResidenceHistory)">
+            <summary>
+            Maps a residence to the modal edit form view model.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Mapping.ResidenceHistoryMappingExtensions.ApplyForm(RentalApplications.Domain.Entities.ResidenceHistory,RentalApplications.Models.Applications.ResidenceFormViewModel)">
+            <summary>
+            Copies posted form values onto a residence entity.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Mapping.UnitMappingExtensions">
+            <summary>
+            Maps between <see cref="T:RentalApplications.Domain.Entities.Unit"/> entities and unit form view models.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Mapping.UnitMappingExtensions.ToFormViewModel(RentalApplications.Domain.Entities.Unit)">
+            <summary>
+            Builds a form view model from a unit entity.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Mapping.UnitMappingExtensions.ApplyForm(RentalApplications.Domain.Entities.Unit,RentalApplications.Models.Properties.UnitFormViewModel)">
+            <summary>
+            Copies posted form values onto a unit entity.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.Mapping.UnitMappingExtensions.ToOptionViewModel(RentalApplications.Domain.Entities.UnitType)">
+            <summary>
+            Maps a unit type to a dropdown option view model.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Mvc.HumanizerDisplayMetadataProvider">
+            <summary>
+            Uses property names as human-readable labels when no <see cref="T:System.ComponentModel.DataAnnotations.DisplayAttribute"/> name is set.
+            </summary>
+        </member>
+        <member name="T:RentalApplications.Validation.ValidationConstants">
+            <summary>
+            Shared patterns for data annotation validation on forms.
+            </summary>
+        </member>
+        <member name="F:RentalApplications.Validation.ValidationConstants.PhonePattern">
+            <summary>North American phone numbers (10 digits, optional +1 and separators).</summary>
+        </member>
+        <member name="T:RentalApplications.ViewComponents.ApplicationStatusHistoryViewComponent">
+            <summary>
+            Renders status change history for a rental application (property managers).
+            </summary>
+        </member>
+        <member name="M:RentalApplications.ViewComponents.ApplicationStatusHistoryViewComponent.#ctor(RentalApplications.Services.Abstractions.IApplicationStatusHistoryService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RentalApplications.ViewComponents.ApplicationStatusHistoryViewComponent"/> class.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.ViewComponents.ApplicationStatusHistoryViewComponent.InvokeAsync(System.Int32)">
+            <summary>
+            Loads status history for the application and returns the default view.
+            </summary>
+            <param name="applicationId">Application identifier.</param>
+        </member>
+        <member name="T:RentalApplications.ViewComponents.PropertyUnitListViewComponent">
+            <summary>
+            Renders the unit list for a property on the manager properties page.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.ViewComponents.PropertyUnitListViewComponent.#ctor(RentalApplications.Services.Abstractions.IPropertyManagementService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:RentalApplications.ViewComponents.PropertyUnitListViewComponent"/> class.
+            </summary>
+        </member>
+        <member name="M:RentalApplications.ViewComponents.PropertyUnitListViewComponent.InvokeAsync(System.Int32)">
+            <summary>
+            Loads units for the property and returns the default view.
+            </summary>
+            <param name="propertyId">Property identifier.</param>
+        </member>
+        <member name="T:Program">
+            <summary>
+            Auto-generated public partial Program class for top-level statement apps.
+            </summary>
+        </member>
+    </members>
+</doc>

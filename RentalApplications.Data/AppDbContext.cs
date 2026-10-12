@@ -48,7 +48,10 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
             entity.Property(a => a.ApplicantName).HasMaxLength(200);
             entity.Property(a => a.Phone).HasMaxLength(50);
             entity.Property(a => a.Email).HasMaxLength(256);
-            entity.Property(a => a.CurrentAddress).HasMaxLength(500);
+            entity.Property(a => a.CurrentStreetAddress).HasMaxLength(300);
+            entity.Property(a => a.CurrentCity).HasMaxLength(100);
+            entity.Property(a => a.CurrentState).HasMaxLength(50);
+            entity.Property(a => a.CurrentPostalCode).HasMaxLength(20);
             entity.HasOne(a => a.Lease)
                 .WithOne(l => l.RentalApplication)
                 .HasForeignKey<Lease>(l => l.RentalApplicationId);
@@ -60,7 +63,10 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
 
         builder.Entity<ResidenceHistory>(entity =>
         {
-            entity.Property(r => r.Address).HasMaxLength(500);
+            entity.Property(r => r.StreetAddress).HasMaxLength(300);
+            entity.Property(r => r.City).HasMaxLength(100);
+            entity.Property(r => r.State).HasMaxLength(50);
+            entity.Property(r => r.PostalCode).HasMaxLength(20);
             entity.Property(r => r.LandlordName).HasMaxLength(200);
             entity.Property(r => r.LandlordPhone).HasMaxLength(50);
         });

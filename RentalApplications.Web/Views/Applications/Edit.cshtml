@@ -6,7 +6,7 @@
 <div class="d-flex justify-content-between align-items-start mb-3">
     <div>
         <h1>Application</h1>
-        <p class="text-muted mb-0">@Model.PropertyName — Unit @Model.UnitNumber · <span class="badge text-bg-secondary">@Model.Status</span></p>
+        <p class="text-muted mb-0">@Model.PropertyName — Unit @Model.UnitNumber · <span class="badge text-bg-secondary">@Model.Status.Humanize()</span></p>
     </div>
     @if (Model.CanWithdraw)
     {

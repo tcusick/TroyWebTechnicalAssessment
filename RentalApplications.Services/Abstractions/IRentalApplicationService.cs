@@ -52,7 +52,10 @@ public interface IRentalApplicationService
         string name,
         string phone,
         string email,
-        string address,
+        string streetAddress,
+        string city,
+        string state,
+        string postalCode,
         CancellationToken cancellationToken = default);
 
     /// <summary>

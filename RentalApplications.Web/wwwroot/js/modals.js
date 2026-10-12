@@ -23,6 +23,13 @@ window.RentalModals = (function () {
         root.querySelectorAll('form[data-modal-form]').forEach(form => {
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
+                if (window.jQuery && $.validator) {
+                    const $form = $(form);
+                    if ($form.data('validator') && !$form.valid()) {
+                        return;
+                    }
+                }
+
                 const formData = new FormData(form);
                 const token = getToken();
                 const response = await fetch(form.action, {

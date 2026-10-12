@@ -26,7 +26,7 @@
                 <span asp-validation-for="MonthlyRent" class="text-danger"></span>
             </div>
             <div class="col-md-4 mb-3">
-                <label asp-for="UnitTypeId" class="form-label">Unit type</label>
+                <label asp-for="UnitTypeId" class="form-label"></label>
                 <select asp-for="UnitTypeId" class="form-select"
                         asp-items="@(new SelectList(Model.UnitTypeOptions, nameof(UnitTypeOptionViewModel.Id), nameof(UnitTypeOptionViewModel.Name)))">
                 </select>

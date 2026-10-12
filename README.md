@@ -34,11 +34,19 @@ Configured in `RentalApplications.Web/appsettings.json` (LocalDB by default). Ov
 
 ### Migrations
 
-EF tools read **`DefaultConnection`** from `RentalApplications.Web/appsettings.json` (and environment overrides), same as the running app—there is no separate design-time connection string in code.
+The schema is a single **`InitialCreate`** migration. EF tools read **`DefaultConnection`** from `RentalApplications.Web/appsettings.json` (same as the running app).
+
+Reset LocalDB during development:
+
+```bash
+dotnet ef database drop --force --project RentalApplications.Data/RentalApplications.Data.csproj --startup-project RentalApplications.Web/RentalApplications.Web.csproj
+dotnet ef database update --project RentalApplications.Data/RentalApplications.Data.csproj --startup-project RentalApplications.Web/RentalApplications.Web.csproj
+```
+
+Or run the app after a drop; startup applies migrations and seeds automatically.
 
 ```bash
 dotnet ef migrations add <Name> --project RentalApplications.Data/RentalApplications.Data.csproj --startup-project RentalApplications.Web/RentalApplications.Web.csproj
-dotnet ef database update --project RentalApplications.Data/RentalApplications.Data.csproj --startup-project RentalApplications.Web/RentalApplications.Web.csproj
 ```
 
 ## Seeded accounts
@@ -55,20 +63,3 @@ Additional applicant accounts (`applicant2@example.com`, etc.) use the same pass
 ```bash
 dotnet test RentalApplications.sln
 ```
-
-## Health checks
-
-Anonymous endpoints for probes (no authentication required):
-
-| Path | Purpose |
-|------|---------|
-| `GET /health` | Application + SQL database connectivity |
-| `GET /health/ready` | Database connectivity only (readiness) |
-
-Responses are minimal JSON, e.g. `{ "status": "Healthy", "totalDuration": 12.3 }`. Returns HTTP 503 when unhealthy.
-
-## Logging
-
-The app uses the built-in `ILogger<T>` pipeline. Important business events (applications, reviews, property/unit changes, auth) log at **Information** or **Warning** with structured properties (ids, not passwords). EF Core SQL is limited to **Warning** by default.
-
-Adjust levels under `Logging:LogLevel` in `appsettings.json` or environment variables, e.g. `Logging__LogLevel__RentalApplications=Debug`. In production, forward console output to your host’s log aggregator (Azure App Service logs, CloudWatch, etc.).

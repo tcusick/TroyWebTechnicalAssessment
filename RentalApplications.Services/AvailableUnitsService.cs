@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RentalApplications.Data;
+using RentalApplications.Domain;
 using RentalApplications.Services.Abstractions;
 using RentalApplications.Services.Models;
 
@@ -35,7 +36,7 @@ public class AvailableUnitsService : IAvailableUnitsService
             .Select(u => new AvailableUnitRow(
                 u.Id,
                 u.Property.Name,
-                $"{u.Property.StreetAddress}, {u.Property.City}, {u.Property.State} {u.Property.PostalCode}",
+                PostalAddress.Format(u.Property.StreetAddress, u.Property.City, u.Property.State, u.Property.PostalCode),
                 u.UnitNumber,
                 u.Bedrooms,
                 u.MonthlyRent,

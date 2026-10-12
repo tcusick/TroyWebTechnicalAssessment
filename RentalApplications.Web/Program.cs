@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RentalApplications.Data;
-using RentalApplications.Health;
 using RentalApplications.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,8 +32,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddRentalApplicationsServices();
 builder.Services.AddControllersWithViews();
-builder.Services.AddRentalApplicationsHealthChecks();
-
+builder.Services.PostConfigure<MvcOptions>(options =>
+{
+    options.ModelMetadataDetailsProviders.Add(new RentalApplications.Mvc.HumanizerDisplayMetadataProvider());
+});
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -47,7 +49,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapRentalApplicationsHealthChecks();
 app.MapStaticAssets();
 app.MapControllerRoute(
     name: "default",

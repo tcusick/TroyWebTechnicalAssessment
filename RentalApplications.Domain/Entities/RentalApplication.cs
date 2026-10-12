@@ -17,7 +17,10 @@ public class RentalApplication
     public string ApplicantName { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public string CurrentAddress { get; set; } = string.Empty;
+    public string CurrentStreetAddress { get; set; } = string.Empty;
+    public string CurrentCity { get; set; } = string.Empty;
+    public string CurrentState { get; set; } = string.Empty;
+    public string CurrentPostalCode { get; set; } = string.Empty;
 
     public ICollection<ResidenceHistory> ResidenceHistories { get; set; } = new List<ResidenceHistory>();
     public ICollection<ApplicationStatusHistory> StatusHistories { get; set; } = new List<ApplicationStatusHistory>();
